@@ -51,6 +51,7 @@ export class SqliteWorker extends EventEmitter<SqliteWorkerEvents> {
     sql: string,
     params: Array<string | number> = []
   ): Promise<T[]> {
+    if (this.state !== "open") throw new Error("DB not open");
     return (await this.postMessage("QUERY", { sql, params }, null)) as T[];
   }
 
@@ -116,14 +117,17 @@ export class SqliteWorker extends EventEmitter<SqliteWorkerEvents> {
   }
 
   async getChanges(): Promise<number> {
+    if (this.state !== "open") throw new Error("DB not open");
     return (await this.postMessage("GET_CHANGES")) as number;
   }
 
   async getTotalChanges(): Promise<number> {
+    if (this.state !== "open") throw new Error("DB not open");
     return (await this.postMessage("GET_TOTAL_CHANGES")) as number;
   }
 
   async getLastInsertRowID(): Promise<number> {
+    if (this.state !== "open") throw new Error("DB not open");
     return (await this.postMessage("GET_LAST_INSERT_ROW_ID")) as number;
   }
 }
